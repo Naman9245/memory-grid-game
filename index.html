@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Memory Grid 🧠</title>
+  <meta name="description" content="Look, remember, put it all back! A memory game for two.">
+  <meta property="og:title" content="Memory Grid 🧠">
+  <meta property="og:description" content="Look, remember, put it all back! A memory game for two.">
+  <meta name="theme-color" content="#5b3a22">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body class="home">
+  <div id="app">
+    <header class="topbar">
+      <div class="player s0" id="p0">
+        <div class="avatar"><span class="avatar-letter">?</span><i class="online-dot"></i></div>
+        <div class="pinfo"><div class="pname">—</div><div class="pmeta"></div></div>
+        <div class="pscore"><b>0</b><span>⭐</span></div>
+      </div>
+      <div class="roundpill" id="roundPill"><b></b><span></span></div>
+      <div class="player s1" id="p1">
+        <div class="avatar"><span class="avatar-letter">?</span><i class="online-dot"></i></div>
+        <div class="pinfo"><div class="pname">—</div><div class="pmeta"></div></div>
+        <div class="pscore"><b>0</b><span>⭐</span></div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div class="hud" id="hud"></div>
+      <div class="boardwrap" id="boardWrap">
+        <div class="sheet" id="sheet">
+          <div class="board" id="board"></div>
+          <div class="count" id="count" hidden></div>
+        </div>
+      </div>
+      <div class="panel" id="panel"></div>
+    </main>
+
+    <footer class="bottombar">
+      <button class="iconbtn" id="homeBtn" aria-label="Home">🏠</button>
+      <div class="status" id="status" aria-live="polite"></div>
+      <button class="iconbtn" id="muteBtn" aria-label="Sound on or off">🔊</button>
+    </footer>
+  </div>
+
+  <!-- Home -->
+  <section class="overlay" id="home">
+    <div class="card">
+      <div class="logo">🧠</div>
+      <h1>Memory Grid</h1>
+      <p class="tag">Look, remember,<br>put it all back! 🧩</p>
+      <input class="input" id="nameInput" maxlength="14" placeholder="Your name" autocomplete="off" autocapitalize="words" enterkeyhint="go">
+      <div class="stack" id="joinFromLink" hidden>
+        <p>You're invited to game <b id="linkCode"></b> 💌</p>
+        <button class="btn" id="joinLinkBtn">Join Game</button>
+        <button class="linkbtn" id="notThisGame">or start a new game</button>
+      </div>
+      <div class="stack" id="mainActions">
+        <button class="btn purple" id="continueBtn" hidden>▶ Continue game</button>
+        <button class="btn" id="createBtn">Create Game ✨</button>
+        <div class="divider">or join with a code</div>
+        <div class="row">
+          <input class="input" id="codeInput" placeholder="GRID-1234" maxlength="9" autocomplete="off" autocapitalize="characters" enterkeyhint="go">
+          <button class="btn small pink" id="joinCodeBtn">Join</button>
+        </div>
+      </div>
+      <p class="err" id="homeErr"></p>
+      <details class="how">
+        <summary>How to play?</summary>
+        <ol>
+          <li>👀 A grid of pictures shows for a few seconds. Remember where each one is!</li>
+          <li>🙈 Then the pictures hide.</li>
+          <li>✋ Put every picture back in its box before the timer runs out. Tap a picture, then tap its box.</li>
+          <li>⭐ Every picture in the right box is 1 point. Each wrong one costs you that point: 9 − 1 = 8.</li>
+          <li>📈 3 rounds: 3×3, then 4×4, then 5×5. Most points after 3 rounds wins!</li>
+        </ol>
+      </details>
+    </div>
+  </section>
+
+  <!-- Waiting for partner -->
+  <section class="overlay" id="lobby" hidden>
+    <div class="card">
+      <div class="bigicon">🧠</div>
+      <h2>Your game is ready!</h2>
+      <p>Send this to your partner:</p>
+      <div class="code" id="lobbyCode">GRID-0000</div>
+      <button class="btn green" id="waBtn">Share on WhatsApp</button>
+      <button class="btn ghost" id="copyBtn">🔗 Copy link</button>
+      <button class="btn ghost" id="shareBtn" hidden>📤 Share…</button>
+      <p class="waiting">Waiting for your partner to join</p>
+    </div>
+  </section>
+
+  <!-- Looking for a game -->
+  <section class="overlay" id="looking" hidden>
+    <div class="card">
+      <div class="bigicon">🔎</div>
+      <h2>Finding game <span id="lookCode"></span></h2>
+      <p id="lookHint">Connecting…</p>
+      <button class="btn ghost" id="lookBack">⬅ Back</button>
+    </div>
+  </section>
+
+  <!-- Seat picker -->
+  <section class="overlay" id="seat" hidden>
+    <div class="card">
+      <h2>Who are you? 👀</h2>
+      <p>This game is between <b id="seatNames"></b>.</p>
+      <div class="stack" id="seatBtns"></div>
+      <button class="btn ghost" id="seatBack">⬅ Back</button>
+    </div>
+  </section>
+
+  <!-- Game over -->
+  <section class="overlay" id="final" hidden>
+    <div class="card">
+      <div class="trophy" id="finalIcon">🏆</div>
+      <h2 id="finalTitle"></h2>
+      <p id="finalSub"></p>
+      <div class="finalscores" id="finalScores"></div>
+      <table class="breakdown" id="breakdown"></table>
+      <button class="btn" id="againBtn">Play again 🔁</button>
+      <button class="linkbtn" id="finalPeek">Look at the boards</button>
+    </div>
+  </section>
+
+  <div class="banner" id="banner" hidden><div class="bcard"><div class="big"></div><div class="small"></div></div></div>
+  <div class="toast" id="toast" hidden></div>
+  <button class="update" id="update" hidden>✨ New version ready! Tap to update</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"
+          onerror="var s=document.createElement('script');s.src='https://unpkg.com/@supabase/supabase-js@2.117.2/dist/umd/supabase.js';document.head.appendChild(s)"></script>
+  <script src="game.js?v=1"></script>
+</body>
+</html>
